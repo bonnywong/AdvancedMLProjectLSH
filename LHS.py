@@ -1,3 +1,5 @@
+# Earlier version, no longer in use.
+
 import bitarray
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
