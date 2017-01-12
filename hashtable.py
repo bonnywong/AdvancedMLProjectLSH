@@ -22,7 +22,7 @@ class HashTable:
         """Hash function without converting to unary"""
         h = 0;
         for i in range(point.size):
-            if(self.hash_index[i]%self.C <= point[self.hash_index[i]//self.C]):
+            if(point[self.hash_index[i]//self.C] > self.hash_index[i]%self.C):
                 h += self.hash_const[i]
         return h % self.M
 
