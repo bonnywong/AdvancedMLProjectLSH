@@ -3,13 +3,14 @@
 
 import numpy as np
 import time
+from hashtable import HashTable
 
 #  It is assumed that the dataset is in the root of
 #  working dir.
 def parse_dataset(filename):
     data = []
     file = open(filename, 'r')
-    dimension = file.readline()
+    dimension = int(file.readline())
     print(dimension)
 
     counter = 0
@@ -18,6 +19,7 @@ def parse_dataset(filename):
         p = line.strip().split(":")
         p.pop()  # Removes the last element that gives us the index of the point.
         p = list(map(np.float, p))  # Convert string to numpy floats
+        #p = np.array(p)
 
         data.append(p)
 
@@ -27,14 +29,20 @@ def parse_dataset(filename):
 
     print("Elements:", counter)
     return data, dimension  #OBS! Note that we're returning a tuple.
+    # data is a list of numpy arrays (of coordinates)
 
-dataset1 = "Dataset_1.rcd"
+def main():
 
-t = time.process_time()
-data, data_dim = parse_dataset(dataset1)
-delta_t = time.process_time() - t
+    dataset1 = "Dataset_1.rcd"
 
-print("Took:", delta_t, "seconds to parse", dataset1)
+    t = time.process_time()
+    data, data_dim = parse_dataset(dataset1)
+    delta_t = time.process_time() - t
 
-for i in range(5):
-    print(data[i])
+    print("Took:", delta_t, "seconds to parse", dataset1)
+
+    for i in range(5):
+        print(data[i])
+
+if __name__ == '__main__':
+        main()
