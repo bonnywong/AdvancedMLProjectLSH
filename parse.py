@@ -24,8 +24,8 @@ def parse_dataset(filename):
         data.append(p)
 
         counter += 1
-        if counter % 10 == 0:
-            print("Elements:", counter, end='\r')
+        #if counter % 10 == 0:
+        #    print("Elements:", counter, end='\r')
 
     print("Elements:", counter)
     return data, dimension  #OBS! Note that we're returning a tuple.
@@ -35,11 +35,11 @@ def main():
 
     dataset1 = "Dataset_1.rcd"
 
-    t = time.process_time()
+    #t = time.process_time()
     data, data_dim = parse_dataset(dataset1)
-    delta_t = time.process_time() - t
+    #delta_t = time.process_time() - t
 
-    print("Took:", delta_t, "seconds to parse", dataset1)
+    #print("Took:", delta_t, "seconds to parse", dataset1)
 
     for i in range(5):
         print(data[i])

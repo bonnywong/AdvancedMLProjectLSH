@@ -19,32 +19,34 @@ class HashTable:
         for i in range(self.M):
             self.table[i] = []
 
-    def LSH(self,pointIndex):
+    def LSH(self,point):
         """Hash function without converting to unary"""
+        print("LSH")
         h = 0;
-        for i in range(len(self.datakeeper.getPoint(pointIndex))):
-            if(self.datakeeper.getPoint(pointIndex)[self.hash_index[i]//self.C] > self.hash_index[i]%self.C):
-                h += self.hash_const[i]
+        for i in range(len(point)):
+            if(point[int(self.hash_index[i]//self.C)] > self.hash_index[i]%self.C):
+                h+=self.hash_const[i]
         return h % self.M
 
     def add_point(self,pointIndex):
-        index = self.LSH(self.datakeeper.getPoint(pointIndex))
-        #print("Hash: " + str(index))
+        point = self.datakeeper.getPoint(pointIndex)
+        index = self.LSH(point)
         if (len(self.table[index]) < self.bucketSize):
-            self.table[index].append(self.datakeeper.getPoint(pointIndex))
+            self.table[index].append(pointIndex)
+            print("Bucket: " + str(self.table[index]))
         else:
             #print("Bucket full: hash="+str(index) + " point[0]=" + str(point[0]))
             for i in range(1,self.M):
                 index=index+1
                 if (len(self.table[(index)%self.M]) < self.bucketSize):
-                    self.table[(index)%self.M].append(self.datakeeper.getPoint(pointIndex))
+                    self.table[(index)%self.M].append(pointIndex)
                     return
 
-    def get_bucket(self,pointIndex):
-        return self.table[self.LSH(pointIndex)]
+    def get_bucket(self,point):
+        return self.table[self.LSH(point)]
 
 def main():
-    #OBS! detta kommer inte att fungera nu längre, eftersom HashTable är ändrad.
+    #OBS! detta kommer inte att fungera nu langre, eftersom HashTable ar andrad.
 
     # Hashtable(M,k,dim,B,C)
     # M = size of hashtalbe
