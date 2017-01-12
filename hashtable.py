@@ -21,7 +21,6 @@ class HashTable:
 
     def LSH(self,point):
         """Hash function without converting to unary"""
-        print("LSH")
         h = 0;
         for i in range(len(point)):
             if(point[int(self.hash_index[i]//self.C)] > self.hash_index[i]%self.C):
@@ -33,7 +32,7 @@ class HashTable:
         index = self.LSH(point)
         if (len(self.table[index]) < self.bucketSize):
             self.table[index].append(pointIndex)
-            print("Bucket: " + str(self.table[index]))
+            #print("Bucket: " + str(self.table[index]))
         else:
             #print("Bucket full: hash="+str(index) + " point[0]=" + str(point[0]))
             for i in range(1,self.M):

@@ -24,12 +24,26 @@ class Datakeeper:
         M = 1000
         k = 700
         bucketSize = 300
-        hashtables=list()
+        self.hashtables=list()
         for i in range(numberOfHashtables):
-            hashtables.append(HashTable(M,k,self.dataset1_dimension,bucketSize,C,self))
+            self.hashtables.append(HashTable(M,k,self.dataset1_dimension,bucketSize,C,self))
+
+        for i in self.hashtables:
+            i.add_point(0)
+            i.add_point(1)
+            i.add_point(2)
+
+        queryPoint = self.getPoint(1)
+        print("\nqueryPoint: " + str(queryPoint))
+        print("index of neighbours: " + str(self.getBuckets(queryPoint)))
+
 
     def getBuckets(self,queryPoint):
-        pass
+        S = []
+        for i in self.hashtables:
+            S.append(i.get_bucket(queryPoint))
+            #print(S)
+        return S
 
     def getPoint(self,pointIndex):
         return self.dataset1[pointIndex]
