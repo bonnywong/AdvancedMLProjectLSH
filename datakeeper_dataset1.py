@@ -77,16 +77,16 @@ def saveData(data,filename="default"):
 
 
 def loadData(filename="default"):
-    print("Loading object: exported/"+filename)
+    print("[datakeeper] Loading object: exported/"+filename)
     with open('exported/'+filename, 'rb') as input:
         data = pickle.load(input)
-    print("Done loading")
+    print("[datakeeper] Done loading")
     return data
 
 
 def main():
 
-    data1 = Datakeeper(numberOfHashtables=3)
+    data1 = Datakeeper(numberOfHashtables=3,dataset1_filename="Dataset_1.rcd")
     saveData(data=data1,filename="temp1")
     del data1
 

@@ -11,7 +11,7 @@ def parse_dataset(filename):
     data = []
     file = open(filename, 'r')
     dimension = int(file.readline())
-    print(dimension)
+    print("[Parsing] Dimension: ",dimension)
 
     counter = 0
     for line in file:
@@ -27,7 +27,7 @@ def parse_dataset(filename):
         #if counter % 10 == 0:
         #    print("Elements:", counter, end='\r')
 
-    print("Elements:", counter)
+    print("[Parsing] Number of elements parsed from ("+filename+"): ", counter)
     return data, dimension  #OBS! Note that we're returning a tuple.
     # data is a list of numpy arrays (of coordinates)
 
