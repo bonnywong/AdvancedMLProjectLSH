@@ -2,11 +2,12 @@ from parse import parse_dataset
 from hashtable import HashTable
 import numpy as np
 import time
+import pickle
 
 
 class Datakeeper:
 
-    def __init__(self,numberOfHashtables,dataset1_filename="Dataset_1_short.rcd"):
+    def __init__(self,numberOfHashtables,dataset1_filename="Dataset_1.rcd"):
         # Import dataset_1:
         # dataset1 is a list of points (each point is a numpy array, its elements are the coordinates)
         # in rest of code, all points can be referenced by their index in dataset1
@@ -28,30 +29,62 @@ class Datakeeper:
         for i in range(numberOfHashtables):
             self.hashtables.append(HashTable(M,k,self.dataset1_dimension,bucketSize,C,self))
 
+        for i in range(len(self.dataset1)):
+            for h in self.hashtables:
+                h.add_point(i)
+            if(i%100 == 0):
+                print("Point: " + str(i))
+
+        '''
         for i in self.hashtables:
             i.add_point(0)
             i.add_point(1)
+            i.add_point(1)
             i.add_point(2)
 
-        queryPoint = self.getPoint(1)
-        print("\nqueryPoint: " + str(queryPoint))
-        print("index of neighbours: " + str(self.getBuckets(queryPoint)))
-
+        queryPoint = self.getPoint(3)
+        print("\nqueryPoint: \n" + str(queryPoint))
+        print("neighbours: \n" + str(self.getNN(queryPoint,700)))
+        '''
 
     def getBuckets(self,queryPoint):
         S = []
         for i in self.hashtables:
             S.append(i.get_bucket(queryPoint))
-            #print(S)
         return S
 
     def getPoint(self,pointIndex):
         return self.dataset1[pointIndex]
 
+    def getNN(self,point,K):
+        S = np.unique(np.concatenate(self.getBuckets(point)))
+        distance = np.zeros(S.size)
+        for i in range(S.size):
+            distance[i] = np.linalg.norm(point-np.array(self.getPoint(S[i])))
+        index = sorted(range(len(distance)), key=lambda k: distance[k])
+        S_sorted = S[index]
+
+        P = list()
+        for i in range(min(S.size,K)):
+            P.append(self.getPoint(S_sorted[i]))
+        return P
+
 
 def main():
     data1 = Datakeeper(numberOfHashtables=3)
+    with open('temp/Test01.pkl', 'wb') as output:
+        pickle.dump(data1, output, pickle.HIGHEST_PROTOCOL)
+    del data1
 
+    print("Object saved")
+
+    print("Loading object")
+    with open('temp/Test01.pkl', 'rb') as input:
+        NEW = pickle.load(input)
+    print("Done")
+
+    print("Find NN")
+    print(NEW.getNN(NEW.getPoint(3),1))
 
 
 
