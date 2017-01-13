@@ -7,7 +7,7 @@ import time
 
 class Datakeeper:
 
-    def __init__(self,numberOfHashtables,dataset1_filename="Dataset_1.rcd"):
+    def __init__(self,numberOfHashtables,dataset1_filename="Dataset_1_short.rcd"):
         # Import dataset_1:
         # dataset1 is a list of points (each point is a numpy array, its elements are the coordinates)
         # in rest of code, all points can be referenced by their index in dataset1
@@ -22,7 +22,7 @@ class Datakeeper:
             npmax = np.max(i)
             if npmax>C:
                 C = npmax
-        M = 1000
+        M = 2#1000
         k = 700
         bucketSize = 300
         self.hashtables=list()
@@ -56,8 +56,6 @@ class Datakeeper:
     def getPoint(self,pointIndex):
         return self.dataset1[pointIndex]
 
-
-
     def getNN(self,point,K):
         S = np.unique(np.concatenate(self.getBuckets(point)))
         distance = np.zeros(S.size)
@@ -71,17 +69,20 @@ class Datakeeper:
             P.append(self.getPoint(S_sorted[i]))
         return P
 
-def saveData(self,data,filename="default"):
+
+def saveData(data,filename="default"):
     with open('exported/'+filename, 'wb') as output:
         pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
     print("Data saved as: exported/"+filename)
 
-def loadData(self,filename="default"):
+
+def loadData(filename="default"):
     print("Loading object: exported/"+filename)
     with open('exported/'+filename, 'rb') as input:
         data = pickle.load(input)
     print("Done loading")
     return data
+
 
 def main():
 
