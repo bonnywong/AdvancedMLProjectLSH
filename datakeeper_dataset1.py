@@ -1,8 +1,8 @@
 from parse import parse_dataset
 from hashtable import HashTable
 import numpy as np
-import time
 import pickle
+import time
 
 
 class Datakeeper:
@@ -56,6 +56,8 @@ class Datakeeper:
     def getPoint(self,pointIndex):
         return self.dataset1[pointIndex]
 
+
+
     def getNN(self,point,K):
         S = np.unique(np.concatenate(self.getBuckets(point)))
         distance = np.zeros(S.size)
@@ -69,22 +71,29 @@ class Datakeeper:
             P.append(self.getPoint(S_sorted[i]))
         return P
 
+def saveData(self,data,filename="default"):
+    with open('exported/'+filename, 'wb') as output:
+        pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+    print("Data saved as: exported/"+filename)
+
+def loadData(self,filename="default"):
+    print("Loading object: exported/"+filename)
+    with open('exported/'+filename, 'rb') as input:
+        data = pickle.load(input)
+    print("Done loading")
+    return data
 
 def main():
+
     data1 = Datakeeper(numberOfHashtables=3)
-    with open('temp/Test01.pkl', 'wb') as output:
-        pickle.dump(data1, output, pickle.HIGHEST_PROTOCOL)
+    saveData(data=data1,filename="temp1")
     del data1
 
-    print("Object saved")
-
-    print("Loading object")
-    with open('temp/Test01.pkl', 'rb') as input:
-        NEW = pickle.load(input)
-    print("Done")
+    #Load test
+    data1b=loadData(filename="temp1")
 
     print("Find NN")
-    print(NEW.getNN(NEW.getPoint(3),1))
+    print(data1b.getNN(data1b.getPoint(3),1))
 
 
 
