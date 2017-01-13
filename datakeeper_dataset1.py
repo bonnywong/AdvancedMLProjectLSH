@@ -12,7 +12,7 @@ class Datakeeper:
         # dataset1 is a list of points (each point is a numpy array, its elements are the coordinates)
         # in rest of code, all points can be referenced by their index in dataset1
         #t = time.process_time()
-        self.multiplier = 1e9
+        self.multiplier = 1e6
         self.translation = 0.01
         self.dataset1,self.dataset1_dimension = parse_dataset(dataset1_filename,self.multiplier,self.translation)
         #delta_t = time.process_time() - t
@@ -56,7 +56,7 @@ class Datakeeper:
         return S
 
     def getPoint(self,pointIndex):
-        return self.dataset1[pointIndex]
+        return self.dataset1[int(pointIndex)] #omotiverad typecastning! var foersiktig!
 
     def getNN(self,point,K):
         S = np.unique(np.concatenate(self.getBuckets(point)))

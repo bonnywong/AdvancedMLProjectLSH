@@ -2,7 +2,6 @@
 from datakeeper_dataset1 import Datakeeper,saveData,loadData
 from parse import parse_dataset
 import numpy as np
-import pandas
 
 
 def getQueryPoints(multiplier,translation):
@@ -36,7 +35,7 @@ def main():
     distances = []
 
     i =0 
-    # acc - Accurcy, E - Effictive error
+    # acc - Accuracy, E - Effective error
     acc = 0
     E = 0
     Q = len(queryPoints)
@@ -53,9 +52,10 @@ def main():
         if abs(srDistances[i]-d)<1e-4:
             acc+=1
         i+=1
-           
-    print(acc/Q)
-    print(E/Q)
+    E=E/Q
+    acc=acc/Q
+    print(acc)
+    print(E)
         
     #print(nearestNeighbors)
     #print(queryPoints[198])
