@@ -7,7 +7,7 @@ from hashtable import HashTable
 
 #  It is assumed that the dataset is in the root of
 #  working dir.
-def parse_dataset(filename):
+def parse_dataset(filename,multiplier,translation):
     data = []
     file = open(filename, 'r')
     dimension = int(file.readline())
@@ -19,6 +19,7 @@ def parse_dataset(filename):
         p = line.strip().split(":")
         p.pop()  # Removes the last element that gives us the index of the point.
         p = list(map(np.float, p))  # Convert string to numpy floats
+        p = [(x+translation)*multiplier for x in p]
         #p = np.array(p)
 
         data.append(p)
@@ -33,7 +34,7 @@ def parse_dataset(filename):
 
 def main():
 
-    dataset1 = "Dataset_1.rcd"
+    dataset1 = "Dataset_1_data.rcd"
 
     #t = time.process_time()
     data, data_dim = parse_dataset(dataset1)
