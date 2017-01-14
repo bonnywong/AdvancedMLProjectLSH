@@ -20,9 +20,9 @@ class Datakeeper:
 
         #skapa hashtabeller
         numberOfHashtables=7 # deras notation: l
-        M = 1000 # size of hashtable
+        M = 152 # size of hashtable
         k = 700 # number of Hamming indices included in each g_i
-        bucketSize = 300
+        bucketSize = 250 # Size of buckets
 
         C = 0
         for i in self.dataset1:
