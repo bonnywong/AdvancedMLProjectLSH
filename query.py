@@ -22,37 +22,38 @@ def main():
     data1 = loadData(filename="temp1")
     # läs in sr-Tree data 
     srDistances = np.genfromtxt('distance.csv', delimiter=',')
+    srDistancesVector = np.genfromtxt('Dataset_1_distanceVector.csv', delimiter=',')
+    srDistancesVector = np.reshape(srDistancesVector,(1000,10)) # every row contains the 10 NN for a point
     # analysera:
-    numberOfNeighbors = 5
+    numberOfNeighbors = 10
     queryPoints = getQueryPoints(data1.multiplier,data1.translation)
     
     nearestNeighbors = []
-    distances = []
+    distances = [] # avstånd till närmsta granne
+    # distanceVectors = [] # avstånd till alla grannar
 
-    i =0 
-    # acc - Accuracy, E - Effective error
-    acc = 0
-    E = 0
+    E = 0 # add to this below
     Q = len(queryPoints)
-    for point in queryPoints:
-        
+    # totalNumberOfMissedNeighbors = 0
+    numberOfQueriesWithMisses = Q # subtract from this below
+    for i,point in enumerate(queryPoints):
         NN = data1.getNN(point,numberOfNeighbors)
         nearestNeighbors.append(NN)
-        
-        #avstånd d till närmsta granne
-        d=getDlsh(point,NN[0],data1.multiplier)
-        
-        distances.append(d)
-        E += d/srDistances[i]
-        if abs(srDistances[i]-d)<1e-4:
-            acc+=1
-        i+=1
+        numberOfMissedNeighbors=(numberOfNeighbors-len(NN))
+        if numberOfMissedNeighbors==0:
+            # distanceVectors.append([getDlsh(point,neighbor,data1.multiplier) for neighbor in NN]) # avstaand till alla grannar
+            for neighborNumber,neighbor in enumerate(NN):
+                E += getDlsh(point,neighbor,data1.multiplier)/srDistancesVector[i,neighborNumber]
+            numberOfQueriesWithMisses-=1
+        # else:
+        #     distanceVectors.append(0)
+        #     totalNumberOfMissedNeighbors+=numberOfMissedNeighbors
         if(i%100 == 0):
-            print("Query point: " + str(i))
-    E=E/Q
-    acc=acc/Q
-    print("acc: ",acc)
-    print("E: ",E)
+            print("[query] Query point: " + str(i))
+    missRatio = numberOfQueriesWithMisses/Q
+    E=E/(Q*numberOfNeighbors)
+    print("Error: ",E)
+    print("Miss ratio: ",missRatio)
         
     #print(nearestNeighbors)
     #print(queryPoints[198])
