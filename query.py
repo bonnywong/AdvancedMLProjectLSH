@@ -2,7 +2,7 @@
 from datakeeper_dataset1 import Datakeeper,saveData,loadData
 from parse import parse_dataset
 import numpy as np
-
+import pylab as pb
 
 def getQueryPoints(multiplier,translation):
     queryPoints_filename = "Dataset_1_query.rcd"
@@ -17,18 +17,36 @@ def getDlsh(point,neighbor,multiplier):
     distance = np.linalg.norm(point-np.array(neighbor))/multiplier
     return distance
 
+def getPointDist(points,multiplier):
+    N=len(points)
+    PointSetDistances=[]
+    
+    for i in range (0,N):
+        for j in range(i+1,N):
+            
+            d = abs(getDlsh(points[i],points[j],multiplier))
+            PointSetDistances.append(d*multiplier)
+            
+    M = len(PointSetDistances)
+    print("bla: "+ str(M))
+    pb.hist(PointSetDistances,M/100)
+
+            
+
+    
 def main():
     # läs in data som är sparat från preprocessing
     data1 = loadData(filename="temp1")
     # läs in sr-Tree data 
     srDistances = np.genfromtxt('distance.csv', delimiter=',')
     # analysera:
-    numberOfNeighbors = 5
+    numberOfNeighbors = 1
     queryPoints = getQueryPoints(data1.multiplier,data1.translation)
     
+    multiplier = data1.multiplier
     nearestNeighbors = []
     distances = []
-
+    
     i =0 
     # acc - Accuracy, E - Effective error
     acc = 0
@@ -40,22 +58,22 @@ def main():
         nearestNeighbors.append(NN)
         
         #avstånd d till närmsta granne
-        d=getDlsh(point,NN[0],data1.multiplier)
+        d=getDlsh(point,NN[0],multiplier)
         
         distances.append(d)
         E += d/srDistances[i]
-        if abs(srDistances[i]-d)<1e-4:
-            acc+=1
+
         i+=1
         if(i%100 == 0):
             print("Query point: " + str(i))
     E=E/Q
-    acc=acc/Q
-    print("acc: ",acc)
+    
+    #print("acc: ",acc)
     print("E: ",E)
-        
+    
+    #getPointDist(queryPoints[0:int(0.2*len(queryPoints))],multiplier)   
     #print(nearestNeighbors)
-    #print(queryPoints[198])
+    
 
 if __name__ == '__main__':
     main()
