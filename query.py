@@ -5,10 +5,8 @@ import numpy as np
 
 
 def getQueryPoints(multiplier,translation):
-    # fixa denna, i framtiden ska den läsa in från fil genom parse_dataset
     queryPoints_filename = "Dataset_1_query.rcd"
     queryPoints,queryPoints_dimension = parse_dataset(queryPoints_filename,multiplier,translation)
-    
 
     # om man vill läsa in de två första punkterna från dataset1 bara:
     # array = [np.array([0.002188,0.000000,0.000000,0.620521,0.010313,0.007083,0.043021,0.310729,0.000729,0.000000,0.000000,0.000000,0.000417,0.000000,0.000000,0.000000,0.000729,0.000000,0.000000,0.000000,0.002917,0.000000,0.000000,0.000000,0.000937,0.000000,0.000000,0.000000,0.000417,0.000000,0.000000,0.000000]),np.array([0.002917,0.315417,0.188854,0.004440,0.000001,0.000001,0.000004,0.000032,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000208,0.001563,0.003750,0.002708,0.007917,0.326562,0.133958,0.011771])]
@@ -16,10 +14,7 @@ def getQueryPoints(multiplier,translation):
     
 def getDlsh(point,neighbor,multiplier):
     #print(point)
-
-    
     distance = np.linalg.norm(point-np.array(neighbor))/multiplier
-    
     return distance
 
 def main():
@@ -52,10 +47,12 @@ def main():
         if abs(srDistances[i]-d)<1e-4:
             acc+=1
         i+=1
+        if(i%100 == 0):
+            print("Query point: " + str(i))
     E=E/Q
     acc=acc/Q
-    print(acc)
-    print(E)
+    print("acc: ",acc)
+    print("E: ",E)
         
     #print(nearestNeighbors)
     #print(queryPoints[198])

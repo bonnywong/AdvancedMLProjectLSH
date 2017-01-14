@@ -7,7 +7,7 @@ import time
 
 class Datakeeper:
 
-    def __init__(self,numberOfHashtables,dataset1_filename="Dataset_1_data.rcd"):
+    def __init__(self,dataset1_filename="Dataset_1_data.rcd"):
         # Import dataset_1:
         # dataset1 is a list of points (each point is a numpy array, its elements are the coordinates)
         # in rest of code, all points can be referenced by their index in dataset1
@@ -19,14 +19,16 @@ class Datakeeper:
         #print("Took:", delta_t, "seconds to parse", dataset1_filename)
 
         #skapa hashtabeller
+        numberOfHashtables=7 # deras notation: l
+        M = 1000 # size of hashtable
+        k = 700 # number of Hamming indices included in each g_i
+        bucketSize = 300
+
         C = 0
         for i in self.dataset1:
             npmax = np.max(i)
             if npmax>C:
                 C = npmax
-        M = 1000
-        k = 700
-        bucketSize = 300
         self.hashtables=list()
         for i in range(numberOfHashtables):
             self.hashtables.append(HashTable(M,k,self.dataset1_dimension,bucketSize,C,self))
@@ -79,7 +81,7 @@ class Datakeeper:
 def saveData(data,filename="default"):
     with open('exported/'+filename, 'wb') as output:
         pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
-    print("Data saved as: exported/"+filename)
+    print("[datakeeper] Data saved as: exported/"+filename)
 
 
 def loadData(filename="default"):
@@ -92,7 +94,7 @@ def loadData(filename="default"):
 
 def main():
 
-    data1 = Datakeeper(numberOfHashtables=3,dataset1_filename="Dataset_1_data.rcd")
+    data1 = Datakeeper(dataset1_filename="Dataset_1_data.rcd")
     saveData(data=data1,filename="temp1")
     del data1
 
