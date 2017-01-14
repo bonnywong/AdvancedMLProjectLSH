@@ -31,9 +31,44 @@ def getPointDist(points,multiplier):
     print("bla: "+ str(M))
     pb.hist(PointSetDistances,M/100)
 
-            
 
-    
+def linearSearch():
+    srDistancesVector = np.genfromtxt('Dataset_1_distanceVector.csv', delimiter=',')
+    srDistancesVector = np.reshape(srDistancesVector,(1000,10)) # every row contains the 10 NN for a point
+    data2 = loadData(filename="temp1")
+    queryPoints = getQueryPoints(data2.multiplier,data2.translation)
+    antalPoints = 19000
+
+    numberOfNeighbors = 10
+
+    multiplier = data2.multiplier
+    nearestNeighbors = []
+
+    distances = [] # avstånd till närmsta granne
+
+    E = 0 # add to this below
+    queryPoints=queryPoints[:100]
+    Q = len(queryPoints)
+    numberOfQueriesWithMisses = Q # subtract from this below
+    for i,queryPoint in enumerate(queryPoints):
+        distance = np.empty(antalPoints)
+        for j in range(antalPoints):
+            distance[j] = getDlsh(queryPoint,data2.getPoint(j),multiplier)
+        ind = np.argpartition(distance, numberOfNeighbors)[:numberOfNeighbors]
+        NNLinear = sorted(distance[ind])
+        nearestNeighbors.append(NNLinear)
+
+        for idx,dist in enumerate(NNLinear):
+            E += dist/srDistancesVector[i,idx]
+        numberOfQueriesWithMisses-=1
+        if(i%5 == 0):
+            print("[query] Query point: " + str(i))
+    missRatio = numberOfQueriesWithMisses/Q
+    E=E/(Q*numberOfNeighbors)
+    print("Error: ",E)
+    print("Miss ratio: ",missRatio)
+    print("We expect an error very close to 1 and a miss ratio of 0.")
+
 def main():
     # läs in data som är sparat från preprocessing
     data1 = loadData(filename="temp1")
@@ -83,3 +118,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    # linearSearch() # uncomment this line to run the linear search
