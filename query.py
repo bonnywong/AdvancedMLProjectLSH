@@ -3,9 +3,10 @@ from datakeeper_dataset1 import Datakeeper,saveData,loadData
 from parse import parse_dataset
 import numpy as np
 import pylab as pb
+import matplotlib.pyplot as plt
 
 def getQueryPoints(multiplier,translation):
-    queryPoints_filename = "d2/Dataset_2_query_500_shuf.rcd"
+    queryPoints_filename = "d1/Dataset_1_Homemade_query.rcd"
     queryPoints,queryPoints_dimension = parse_dataset(queryPoints_filename,multiplier,translation)
 
     return queryPoints
@@ -80,11 +81,11 @@ def main():
     data1 = loadData(filename="temp1")
 
     #srDistances = np.genfromtxt('distance.csv', delimiter=',')
-    srDistancesVector = np.genfromtxt('d2/distanceVector_19000_10.csv', delimiter=',')
-    srDistancesVector = np.reshape(srDistancesVector,(500,10)) # every row contains the 10 NN for a point
+    srDistancesVector = np.genfromtxt('d1/distanceVector_Homemade_10.csv', delimiter=',')
+    srDistancesVector = np.reshape(srDistancesVector,(1000,10)) # every row contains the 10 NN for a point
     # analysera:
 
-    numberOfNeighbors = 1
+    numberOfNeighbors = 10
 
     multiplier = data1.multiplier
     tr = data1.translation
@@ -97,7 +98,7 @@ def main():
 
 
     nearestNeighbors = []
-
+    distancesMeasured = []
     
 
 #    lnDistancesVector = np.zeros((500,10))
@@ -116,6 +117,7 @@ def main():
 
         numberOfMissedNeighbors=(numberOfNeighbors-len(NN))
         if numberOfMissedNeighbors==0:
+            distancesMeasured.append(len(NN))
             # distanceVectors.append([getDlsh(point,neighbor,data1.multiplier) for neighbor in NN]) # avstaand till alla grannar
             for neighborNumber,neighbor in enumerate(NN):
                 D = getDlsh(point,neighbor,data1.multiplier)
@@ -128,10 +130,17 @@ def main():
         #     totalNumberOfMissedNeighbors+=numberOfMissedNeighbors
         if(i%100 == 0):
             print("[query] Query point: " + str(i))
-    missRatio = numberOfQueriesWithMisses/Q
+    missRatio = float(numberOfQueriesWithMisses)/float(Q)
     E=E/(Q*numberOfNeighbors)
     print("Error: ",E)
     print("Miss ratio: ",missRatio)
+    print("Number of distances measured, for all querypoints: ")
+    print(distancesMeasured)
+    plt.plot(distancesMeasured,'.')
+    plt.ylabel("distances measured")
+    plt.xlabel("querypoint")
+    #plt.hist(distancesMeasured)
+    plt.show()
     #getPointDist(queryPoints[0:int(0.2*len(queryPoints))],multiplier
 
     #print(nearestNeighbors)

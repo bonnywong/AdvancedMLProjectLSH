@@ -13,8 +13,8 @@ class Datakeeper:
         # dataset1 is a list of points (each point is a numpy array, its elements are the coordinates)
         # in rest of code, all points can be referenced by their index in dataset1
         #t = time.process_time()
-        self.multiplier = 1000000
-        self.translation = 2.5
+        self.multiplier = 1 #1000000
+        self.translation = 0 #2.5
         self.dataset1,self.dataset1_dimension = parse_dataset(dataset1_filename,self.multiplier,self.translation)
         #delta_t = time.process_time() - t
         #print("Took:", delta_t, "seconds to parse", dataset1_filename)
@@ -105,7 +105,7 @@ def loadData(filename="default"):
 
 def main():
 
-    data1 = Datakeeper(dataset1_filename="d2/Dataset_2_data_19000.rcd")
+    data1 = Datakeeper(dataset1_filename="d1/Dataset_1_Homemade_data.rcd")
     saveData(data=data1,filename="temp1")
 
     total = np.zeros(len(data1.dataset1))
