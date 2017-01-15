@@ -125,7 +125,7 @@ def main():
     #Information about dataset
     plt.figure(len(data1.hashtables)+1)
     alldata = np.array(data1.dataset1)
-    alldata = np.reshape(alldata,(len(data1.dataset1)*60,1))
+    alldata = np.reshape(alldata,(len(data1.dataset1)*data1.dataset1_dimension,1))
     plt.hist(alldata, 257, facecolor='green', alpha=1)
 
     #plt.figure(len(data1.hashtables)+1)
