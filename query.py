@@ -5,7 +5,7 @@ import numpy as np
 import pylab as pb
 
 def getQueryPoints(multiplier,translation):
-    queryPoints_filename = "dataset_shuffled/dataset_1/Dataset_1_query_shuf.rcd"
+    queryPoints_filename = "d2/Dataset_2_query_500_shuf.rcd"
     queryPoints,queryPoints_dimension = parse_dataset(queryPoints_filename,multiplier,translation)
 
     return queryPoints
@@ -30,7 +30,7 @@ def getPointDist(points,multiplier):
     pb.hist(PointSetDistances,M/100)
 
 def linearSearch():
-    srDistancesVector = np.genfromtxt('Dataset_1_distanceVector.csv', delimiter=',')
+    srDistancesVector = np.genfromtxt('d2/distanceVector_19000_10.csv', delimiter=',')
     srDistancesVector = np.reshape(srDistancesVector,(1000,10)) # every row contains the 10 NN for a point
     data2 = loadData(filename="temp1")
     queryPoints = getQueryPoints(data2.multiplier,data2.translation)
@@ -80,8 +80,8 @@ def main():
     data1 = loadData(filename="temp1")
 
     #srDistances = np.genfromtxt('distance.csv', delimiter=',')
-    #srDistancesVector = np.genfromtxt('Dataset_1_distanceVector.csv', delimiter=',')
-    #srDistancesVector = np.reshape(srDistancesVector,(1000,10)) # every row contains the 10 NN for a point
+    srDistancesVector = np.genfromtxt('d2/distanceVector_19000_10.csv', delimiter=',')
+    srDistancesVector = np.reshape(srDistancesVector,(500,10)) # every row contains the 10 NN for a point
     # analysera:
 
     numberOfNeighbors = 1
@@ -91,18 +91,18 @@ def main():
     queryPoints = getQueryPoints(multiplier,tr)
 
     #Random query points
-    for i in range(len(queryPoints)):
-        for j in range(len(queryPoints[i])):
-            queryPoints[i][j] = np.random.randint(255, size = 1)
+ #   for i in range(len(queryPoints)):
+#        for j in range(len(queryPoints[i])):
+#            queryPoints[i][j] = np.random.randint(255, size = 1)
 
 
     nearestNeighbors = []
 
-    distances = []
+    
 
-    lnDistancesVector = np.zeros((500,10))
-    for i in range(len(queryPoints)):
-        lnDistancesVector[i,:] = findNNLinearSearch(data1.dataset1,queryPoints[i],10,multiplier)
+#    lnDistancesVector = np.zeros((500,10))
+ #   for i in range(len(queryPoints)):
+  #      lnDistancesVector[i,:] = findNNLinearSearch(data1.dataset1,queryPoints[i],10,multiplier)
 
     E = 0 # add to this below
     Q = len(queryPoints)
@@ -119,7 +119,7 @@ def main():
             # distanceVectors.append([getDlsh(point,neighbor,data1.multiplier) for neighbor in NN]) # avstaand till alla grannar
             for neighborNumber,neighbor in enumerate(NN):
                 D = getDlsh(point,neighbor,data1.multiplier)
-                Dstar = lnDistancesVector[i,neighborNumber]
+                Dstar = srDistancesVector[i,neighborNumber]
                 #print("d=" + str(D) + " d*=" + str(Dstar))
                 E += D/Dstar
             numberOfQueriesWithMisses-=1

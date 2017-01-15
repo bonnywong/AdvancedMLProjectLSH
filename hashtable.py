@@ -33,14 +33,16 @@ class HashTable:
         if (len(self.table[index]) < self.bucketSize):
             self.table[index].append(pointIndex)
             #print("Bucket: " + str(self.table[index]))
+        '''
         else:
             #print("Bucket full: hash="+str(index) + " point[0]=" + str(point[0]))
+            
             for i in range(1,self.M):
                 index=index+1
                 if (len(self.table[(index)%self.M]) < self.bucketSize):
                     self.table[(index)%self.M].append(pointIndex)
                     return
-
+'''
     def get_bucket(self,point):
         return self.table[self.LSH(point)]
 
