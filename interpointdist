@@ -1,0 +1,55 @@
+import numpy as np
+import itertools
+import matplotlib.pyplot as plt
+from scipy.spatial.distance import cdist
+
+
+def interpointdist():
+    translation = 10
+    multiplier = 100000
+
+    #file = open("Dataset_2_original.rcd", 'r')
+    file = open("Dataset_1.rcd", 'r')
+    lines = file.readlines()
+
+    indices = np.random.randint(1, 65000, 200) # Generate random indices
+    random_lines = [lines[i] for i in indices]
+
+    #print(indices)
+    #print(random_lines)
+
+    data = []
+
+    for line in random_lines:
+        p = line.strip().split(":")
+        #print(p)
+        p.pop()  # Removes the last element that gives us the index of the point.
+        p = list(map(np.float, p))  # Convert string to numpy floats
+        #p = [(x+translation)*multiplier for x in p]
+        #print(p)
+        data.append(p)
+
+    file.close()
+    return data
+
+# Parse
+data = interpointdist()
+
+# Calculate distance, using the cityblock/L1 distance as mentioned in paper
+data_distances = np.ndarray.tolist(cdist(data, data, metric='euclidean'))
+
+# Gotta remove the 0s ...
+index = 0
+for distance in data_distances:
+    distance.pop(index)
+    index += 1
+
+result = list(itertools.chain.from_iterable(data_distances))
+
+n, bins, patches = plt.hist(result, bins=100, normed=True, histtype='step')
+total_values = sum(n)
+y = []
+for freq in n:
+    y.append(freq/total_values)
+print(y)
+plt.show()
