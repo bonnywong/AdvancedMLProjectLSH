@@ -1,17 +1,15 @@
-# OBS! Allt i denna fil är änsålänge specifikt för dataset1.
+
 from datakeeper_dataset1 import Datakeeper,saveData,loadData
 from parse import parse_dataset
 import numpy as np
 import pylab as pb
 
 def getQueryPoints(multiplier,translation):
-    queryPoints_filename = "Dataset_1_query.rcd"
+    queryPoints_filename = "dataset_shuffled/dataset_1/Dataset_1_query_shuf.rcd"
     queryPoints,queryPoints_dimension = parse_dataset(queryPoints_filename,multiplier,translation)
 
-    # om man vill läsa in de två första punkterna från dataset1 bara:
-    # array = [np.array([0.002188,0.000000,0.000000,0.620521,0.010313,0.007083,0.043021,0.310729,0.000729,0.000000,0.000000,0.000000,0.000417,0.000000,0.000000,0.000000,0.000729,0.000000,0.000000,0.000000,0.002917,0.000000,0.000000,0.000000,0.000937,0.000000,0.000000,0.000000,0.000417,0.000000,0.000000,0.000000]),np.array([0.002917,0.315417,0.188854,0.004440,0.000001,0.000001,0.000004,0.000032,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000208,0.001563,0.003750,0.002708,0.007917,0.326562,0.133958,0.011771])]
     return queryPoints
-    
+
 def getDlsh(point,neighbor,multiplier):
     #print(point)
     distance = np.linalg.norm(point-np.array(neighbor))/multiplier
@@ -20,17 +18,16 @@ def getDlsh(point,neighbor,multiplier):
 def getPointDist(points,multiplier):
     N=len(points)
     PointSetDistances=[]
-    
+
     for i in range (0,N):
         for j in range(i+1,N):
-            
+
             d = abs(getDlsh(points[i],points[j],multiplier))
             PointSetDistances.append(d*multiplier)
-            
+
     M = len(PointSetDistances)
     print("bla: "+ str(M))
     pb.hist(PointSetDistances,M/100)
-
 
 def linearSearch():
     srDistancesVector = np.genfromtxt('Dataset_1_distanceVector.csv', delimiter=',')
@@ -44,7 +41,7 @@ def linearSearch():
     multiplier = data2.multiplier
     nearestNeighbors = []
 
-    distances = [] # avstånd till närmsta granne
+    distances = [] 
 
     E = 0 # add to this below
     queryPoints=queryPoints[:100]
@@ -69,24 +66,43 @@ def linearSearch():
     print("Miss ratio: ",missRatio)
     print("We expect an error very close to 1 and a miss ratio of 0.")
 
+
+def findNNLinearSearch(dataset,point,k,multiplier):
+    distance = np.zeros(len(dataset))
+    for j in range(len(dataset)):
+        distance[j] = getDlsh(point,dataset[j],multiplier)
+    ind = np.argpartition(distance, k)[:k]
+    NNLinear = sorted(distance[ind])
+    return NNLinear
+
 def main():
-    # läs in data som är sparat från preprocessing
+
     data1 = loadData(filename="temp1")
-    # läs in sr-Tree data 
-    srDistances = np.genfromtxt('distance.csv', delimiter=',')
-    srDistancesVector = np.genfromtxt('Dataset_1_distanceVector.csv', delimiter=',')
-    srDistancesVector = np.reshape(srDistancesVector,(1000,10)) # every row contains the 10 NN for a point
+
+    #srDistances = np.genfromtxt('distance.csv', delimiter=',')
+    #srDistancesVector = np.genfromtxt('Dataset_1_distanceVector.csv', delimiter=',')
+    #srDistancesVector = np.reshape(srDistancesVector,(1000,10)) # every row contains the 10 NN for a point
     # analysera:
 
-    numberOfNeighbors = 10
+    numberOfNeighbors = 1
 
-    queryPoints = getQueryPoints(data1.multiplier,data1.translation)
-    
     multiplier = data1.multiplier
+    tr = data1.translation
+    queryPoints = getQueryPoints(multiplier,tr)
+
+    #Random query points
+    for i in range(len(queryPoints)):
+        for j in range(len(queryPoints[i])):
+            queryPoints[i][j] = np.random.randint(255, size = 1)
+
+
     nearestNeighbors = []
 
-    distances = [] # avstånd till närmsta granne
-    # distanceVectors = [] # avstånd till alla grannar
+    distances = []
+
+    lnDistancesVector = np.zeros((500,10))
+    for i in range(len(queryPoints)):
+        lnDistancesVector[i,:] = findNNLinearSearch(data1.dataset1,queryPoints[i],10,multiplier)
 
     E = 0 # add to this below
     Q = len(queryPoints)
@@ -96,11 +112,16 @@ def main():
         NN = data1.getNN(point,numberOfNeighbors)
         nearestNeighbors.append(NN)
 
+        #print("NN=" + str(len(NN)))
+
         numberOfMissedNeighbors=(numberOfNeighbors-len(NN))
         if numberOfMissedNeighbors==0:
             # distanceVectors.append([getDlsh(point,neighbor,data1.multiplier) for neighbor in NN]) # avstaand till alla grannar
             for neighborNumber,neighbor in enumerate(NN):
-                E += getDlsh(point,neighbor,data1.multiplier)/srDistancesVector[i,neighborNumber]
+                D = getDlsh(point,neighbor,data1.multiplier)
+                Dstar = lnDistancesVector[i,neighborNumber]
+                #print("d=" + str(D) + " d*=" + str(Dstar))
+                E += D/Dstar
             numberOfQueriesWithMisses-=1
         # else:
         #     distanceVectors.append(0)
@@ -114,8 +135,8 @@ def main():
     #getPointDist(queryPoints[0:int(0.2*len(queryPoints))],multiplier
 
     #print(nearestNeighbors)
-    
+
 
 if __name__ == '__main__':
     main()
-    # linearSearch() # uncomment this line to run the linear search
+    #linearSearch() # uncomment this line to run the linear search
