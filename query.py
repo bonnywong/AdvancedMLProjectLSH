@@ -62,7 +62,7 @@ def linearSearch():
         if(i%5 == 0):
             print("[query] Query point: " + str(i))
     missRatio = numberOfQueriesWithMisses/Q
-    E=E/(Q*numberOfNeighbors)
+    E=E/((Q-numberOfQueriesWithMisses)*numberOfNeighbors)
     print("Error: ",E)
     print("Miss ratio: ",missRatio)
     print("We expect an error very close to 1 and a miss ratio of 0.")
@@ -131,7 +131,7 @@ def main():
         if(i%100 == 0):
             print("[query] Query point: " + str(i))
     missRatio = float(numberOfQueriesWithMisses)/float(Q)
-    E=E/(Q*numberOfNeighbors)
+    E=E/((Q-numberOfQueriesWithMisses)*numberOfNeighbors)
     print("Error: ",E)
     print("Miss ratio: ",missRatio)
     print("Number of distances measured, for all querypoints: ")
