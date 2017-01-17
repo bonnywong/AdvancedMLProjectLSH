@@ -5,8 +5,8 @@ import numpy as np
 import pylab as pb
 import matplotlib.pyplot as plt
 
-def getQueryPoints(multiplier,translation):
-    queryPoints_filename = "d1/Dataset_1_Homemade_query.rcd"
+def getQueryPoints(multiplier,translation,queryPointsFilename="d1/Dataset_1_Homemade_query.rcd"):
+    queryPoints_filename = queryPointsFilename
     queryPoints,queryPoints_dimension = parse_dataset(queryPoints_filename,multiplier,translation)
 
     return queryPoints
@@ -76,20 +76,21 @@ def findNNLinearSearch(dataset,point,k,multiplier):
     NNLinear = sorted(distance[ind])
     return NNLinear
 
-def main():
+def main(loadFilename="temp1",csvFilename='d1/distanceVector_Homemade_10.csv',dimensionForReshape=10,queryPointsFilename="d1/Dataset_1_Homemade_query.rcd"):
 
-    data1 = loadData(filename="temp1")
+    data1 = loadData(filename=loadFilename)
 
     #srDistances = np.genfromtxt('distance.csv', delimiter=',')
-    srDistancesVector = np.genfromtxt('d1/distanceVector_Homemade_10.csv', delimiter=',')
-    srDistancesVector = np.reshape(srDistancesVector,(1000,10)) # every row contains the 10 NN for a point
+    srDistancesVector = np.genfromtxt(csvFilename, delimiter=',')
+    rows = len(srDistancesVector)/dimensionForReshape
+    srDistancesVector = np.reshape(srDistancesVector,(rows,dimensionForReshape)) # every row contains the 10 NN for a point
     # analysera:
 
     numberOfNeighbors = 10
 
     multiplier = data1.multiplier
     tr = data1.translation
-    queryPoints = getQueryPoints(multiplier,tr)
+    queryPoints = getQueryPoints(multiplier,tr,queryPointsFilename = queryPointsFilename)
 
     #Random query points
  #   for i in range(len(queryPoints)):
@@ -136,14 +137,15 @@ def main():
     print("Miss ratio: ",missRatio)
     print("Number of distances measured, for all querypoints: ")
     print(distancesMeasured)
-    plt.plot(distancesMeasured,'.')
-    plt.ylabel("distances measured")
-    plt.xlabel("querypoint")
+    # plt.plot(distancesMeasured,'.')
+    # plt.ylabel("distances measured")
+    # plt.xlabel("querypoint")
     #plt.hist(distancesMeasured)
-    plt.show()
+    # plt.show()
     #getPointDist(queryPoints[0:int(0.2*len(queryPoints))],multiplier
 
     #print(nearestNeighbors)
+    return [E,missRatio] #[E,missRatio,distancesMeasured]
 
 
 if __name__ == '__main__':

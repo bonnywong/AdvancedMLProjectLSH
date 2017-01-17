@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 class Datakeeper:
 
-    def __init__(self,dataset1_filename="Dataset_1_data.rcd"):
+    def __init__(self,dataset1_filename="Dataset_1_data.rcd",numberOfHashtables=2):
         # Import dataset_1:
         # dataset1 is a list of points (each point is a numpy array, its elements are the coordinates)
         # in rest of code, all points can be referenced by their index in dataset1
@@ -28,7 +28,7 @@ class Datakeeper:
         '''
 
         #skapa hashtabeller
-        numberOfHashtables=7 # deras notation: l
+        # numberOfHashtables=2 # deras notation: l # finns numera som parameter
         M = 151 # size of hashtable
         k = 700 # number of Hamming indices included in each g_i
         bucketSize = 250 # Size of buckets
@@ -47,7 +47,7 @@ class Datakeeper:
             for h in self.hashtables:
                 h.add_point(i)
             if(i%100 == 0):
-                print("Point: " + str(i))
+                print("[datakeeper init] Point: " + str(i))
         
         
         '''
@@ -103,11 +103,12 @@ def loadData(filename="default"):
     return data
 
 
-def main():
+def main(loadFilename="dataset_homemade_2/Dataset_2_Homemade_data_8.rcd",saveFilename="dataset_homemade_2/Dataset_2_Homemade_data_8.bin",numberOfHashtables=2):
 
-    data1 = Datakeeper(dataset1_filename="d1/Dataset_1_Homemade_data.rcd")
-    saveData(data=data1,filename="temp1")
+    data1 = Datakeeper(dataset1_filename=loadFilename,numberOfHashtables=numberOfHashtables)
+    saveData(data=data1,filename=saveFilename)
 
+"""
     total = np.zeros(len(data1.dataset1))
     for table in range(len(data1.hashtables)):
         hashes = np.zeros(len(data1.dataset1))
@@ -132,8 +133,9 @@ def main():
     #plt.plot(total/len(data1.dataset1))
     #plt.hist(total/len(data1.dataset1), 20, facecolor='green', alpha=1)
     plt.show()
+"""
 
-    '''
+'''
     for i in range(len(data1.hashtables)):
         plt.figure(i+1)
         b = np.zeros(data1.hashtables[i].M)
@@ -153,16 +155,16 @@ def main():
     plt.show()
     '''
 
-    #del data1
+#del data1
 
 
-    '''
+'''
     #Load test
     data1b=loadData(filename="temp1")
 
     print("Find NN")
     print(data1b.getNN(data1b.getPoint(3),1))
-    '''
+'''
 
 
 
